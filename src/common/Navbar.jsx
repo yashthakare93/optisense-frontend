@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../auth/api';
+import { Heart, ShoppingBag, User, Search as SearchIcon, Phone } from 'lucide-react';
 
 function Navbar() {
   const navigate = useNavigate();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || 'null'));
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const syncUser = () => {
@@ -19,6 +22,21 @@ function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -26,120 +44,131 @@ function Navbar() {
   };
 
   return (
-    <nav className="sticky-top bg-white border-bottom shadow-sm" style={{ zIndex: 1050 }}>
-      {/* 1. TOP UTILITY BAR */}
-      <div className="border-bottom" style={{ backgroundColor: '#f8f9fa' }}>
-        <div className="container-fluid px-4 px-lg-5">
-          <div className="d-flex justify-content-between align-items-center py-2" style={{ fontSize: '11px' }}>
-            <div className="d-flex gap-3">
-              <span className="text-muted cursor-pointer hover-cyan">🏠 Book Home Eye Test</span>
-              <span className="text-muted cursor-pointer d-none d-md-inline">👓 Try at Home</span>
+    <div className="fixed-top shadow-sm" style={{ zIndex: 1050 }}>
+      {/* 1. TOP UTILITY BAR (White Background) */}
+      <div className="bg-white text-dark py-1 border-bottom">
+        <div className="container-fluid px-3 px-lg-4">
+          <div className="d-flex justify-content-between align-items-center" style={{ fontSize: '10px' }}>
+            <div className="d-flex gap-2 text-muted">
+              <span>Corporate</span> <span>|</span>
+              <span>StoreLocator</span> <span>|</span>
+              <span>Singapore</span> <span>|</span>
+              <span>UAE</span> <span>|</span>
+              <span>John Jacobs</span> <span>|</span>
+              <span>Aqualens</span> <span>|</span>
+              <span>Cobrowsing</span> <span>|</span>
+              <span>Engineering Blog</span> <span>|</span>
+              <span>Partner With Us</span>
             </div>
-            <div className="d-flex gap-3 align-items-center">
-              <span className="text-muted cursor-pointer">Track Order</span>
-              <span className="text-muted">Support: <strong className="text-cyan">99998 99998</strong></span>
+            <div className="d-flex gap-2 align-items-center fw-bold">
+              <Phone size={12} />
+              <span>99998 99998</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 2. MAIN NAVIGATION */}
-      <div className="navbar navbar-expand-lg bg-white ">
-        <div className="container-fluid px-4 px-lg-5">
+      {/* 2. MAIN NAVBAR (Black Background - Logo + Categories + Search + Icons) */}
+      <div
+        className="navbar navbar-expand-lg py-2"
+        style={{
+          backgroundColor: isScrolled ? 'rgba(0, 0, 0, 0.9)' : '#000000',
+          backdropFilter: isScrolled ? 'blur(10px)' : 'none',
+          transition: 'all 0.3s ease',
+          color: 'white'
+        }}
+      >
+        <div className="container-fluid px-3 px-lg-4">
+          {/* FLEX CONTAINER */}
+          <div className="d-flex align-items-center w-100 justify-content-between">
 
-          {/* LEFT: Logo + Categories locked together at start */}
-          <div className="d-flex align-items-center">
-            <Link className="navbar-brand me-4" to="/">
-              <img src="/Logo.png" alt="OptiSense" style={{ height: '40px' }} />
+            {/* LEFT: LOGO */}
+            <Link className="navbar-brand me-3" to="/">
+              <img src="/Logo.png" alt="OptiSense" style={{ height: '28px', filter: 'brightness(0) invert(1)' }} />
             </Link>
 
-            <ul className="navbar-nav d-none d-lg-flex flex-row gap-4 mb-0">
-              {['EYEGLASSES', 'SUNGLASSES', 'CONTACTS'].map((item) => (
-                <li key={item} className="nav-item">
+            {/* LEFT-CENTER: CATEGORY LINKS (Visible on Large Screens) */}
+            <ul className="navbar-nav d-none d-xl-flex flex-row gap-3 me-auto">
+              {[
+                { label: 'EYEGLASSES', category: 'Eyeglasses' },
+                { label: 'SUNGLASSES', category: 'Sunglasses' },
+                { label: 'CONTACTS', category: 'Contact Lenses' },
+                { label: 'SPECIAL POWER', category: null },
+                { label: 'STORES', category: null },
+                { label: 'TRY @ HOME', category: null }
+              ].map(item => (
+                <li key={item.label} className="nav-item">
                   <Link
-                    className="nav-link fw-bold text-dark text-uppercase p-0"
-                    style={{ fontSize: '13px', letterSpacing: '1px' }}
-                    to={`/${item.toLowerCase()}`}
+                    to={item.category ? `/marketplace?category=${encodeURIComponent(item.category)}` : '/marketplace'}
+                    className="nav-link text-white fw-bold text-uppercase p-0"
+                    style={{ fontSize: '13px', letterSpacing: '0.3px' }}
                   >
-                    {item}
+                    {item.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
 
-          {/* RIGHT: Profile & Icons */}
-          <div className="ms-auto d-flex align-items-center gap-4">
-
-            {/* ACCOUNT DROPDOWN - Fixed Logic */}
-            <div className="position-relative">
-              <div
-                className="d-flex align-items-center gap-2 cursor-pointer"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                style={{ cursor: 'pointer' }}
-              >
-                <span style={{ fontSize: '20px' }}>👤</span>
-                <div className="d-flex flex-column leading-tight">
-                  <span className="text-muted" style={{ fontSize: '10px' }}>{user ? 'Hello,' : 'Sign In'}</span>
-                  <span className="fw-bold text-dark" style={{ fontSize: '12px' }}>
-                    {user ? user.name?.split(' ')[0] : 'Account'}
-                  </span>
+            {/* RIGHT-CENTER: SEARCH BAR */}
+            <div className="d-none d-lg-block mx-3" style={{ width: '280px' }}>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                navigate(`/marketplace?search=${searchTerm}`);
+              }}>
+                <div className="input-group align-items-center ps-2" style={{ backgroundColor: '#2B2B2B', borderRadius: '5px', height: '36px' }}>
+                  <SearchIcon size={16} className="text-white" />
+                  <input
+                    type="text"
+                    className="form-control border-0 shadow-none bg-transparent text-white"
+                    placeholder="What are you looking for?"
+                    style={{ fontSize: '13px', padding: '0px 10px', height: '100%', color: 'white' }}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
+              </form>
+            </div>
+
+            {/* RIGHT: ICONS & ACTIONS */}
+            <div className="d-flex align-items-center gap-4">
+              <div className="cursor-pointer" title="Wishlist">
+                <Heart size={20} className="text-white" />
+              </div>
+              <div className="cursor-pointer" title="Cart">
+                <ShoppingBag size={20} className="text-white" />
               </div>
 
-              {/* Manual Dropdown to ensure it works without external JS */}
-              {isDropdownOpen && (
-                <div
-                  className="position-absolute bg-white shadow rounded-3 py-2 mt-2 end-0 border"
-                  style={{ minWidth: '180px', zIndex: 2000 }}
-                  onMouseLeave={() => setIsDropdownOpen(false)}
-                >
-                  {user ? (
-                    <>
-                      {/* DASHBOARD LINK BASED ON ROLE */}
-                      <Link
-                        className="dropdown-item py-2 px-3 small fw-bold text-primary"
-                        to={
-                          user.role === 'ADMIN' ? '/admin/dashboard' :
-                            user.role === 'SELLER' ? '/seller/dashboard' :
-                              '/customer/dashboard'
-                        }
-                      >
-                        📊 Dashboard
-                      </Link>
-
-                      {/* ROLE SPECIFIC LINKS */}
-                      {user.role === 'CUSTOMER' && (
+              <div className="position-relative cursor-pointer" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                <User size={20} className="text-white" />
+                {/* DROPDOWN */}
+                {isDropdownOpen && (
+                  <div className="position-absolute bg-white text-dark shadow-lg rounded-2 py-2 mt-3 end-0 border" style={{ minWidth: '180px', zIndex: 2000 }}>
+                    {user ? (
+                      <>
+                        <div className="px-3 py-1 border-bottom mb-2 bg-light">
+                          <small className="d-block text-muted">Hello,</small>
+                          <span className="fw-bold">{user.name}</span>
+                        </div>
+                        <Link className="dropdown-item py-2 px-3 small fw-bold" to={user.role === 'ADMIN' ? '/admin/dashboard' : user.role === 'SELLER' ? '/seller/dashboard' : '/customer/dashboard'}>Dashboard</Link>
                         <Link className="dropdown-item py-2 px-3 small fw-bold" to="/orders">My Orders</Link>
-                      )}
-
-                      <Link className="dropdown-item py-2 px-3 small fw-bold" to="/profile">Profile Settings</Link>
-                      <div className="dropdown-divider"></div>
-                      <button onClick={handleLogout} className="dropdown-item py-2 px-3 small fw-bold text-danger">LOGOUT</button>
-                    </>
-                  ) : (
-                    <>
-                      <Link className="dropdown-item py-2 px-3 small fw-bold text-dark" to="/login" onClick={() => setIsDropdownOpen(false)}>LOGIN</Link>
-                      <Link className="dropdown-item py-2 px-3 small fw-bold text-dark" to="/signup" onClick={() => setIsDropdownOpen(false)}>SIGN UP</Link>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* UTILITY ICONS */}
-            <div className="d-flex align-items-center gap-3 border-start ps-4">
-              <span className="cursor-pointer d-none d-md-inline" style={{ fontSize: '22px' }}>♡</span>
-              <div className="position-relative cursor-pointer">
-                <span style={{ fontSize: '22px' }}>👜</span>
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style={{ fontSize: '9px' }}>0</span>
+                        <div className="dropdown-divider"></div>
+                        <button onClick={handleLogout} className="dropdown-item py-2 px-3 small fw-bold text-danger">Logout</button>
+                      </>
+                    ) : (
+                      <>
+                        <Link className="dropdown-item py-2 px-3 small fw-bold" to="/login">Login</Link>
+                        <Link className="dropdown-item py-2 px-3 small fw-bold" to="/signup">Sign Up</Link>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
-    </nav>
+    </div>
   );
 }
 

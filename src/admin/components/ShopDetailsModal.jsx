@@ -4,7 +4,7 @@ function ShopDetailsModal({ shop, onClose, onApprove, onReject, isPending, isRej
     const [reason, setReason] = useState('');
 
     return (
-        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1060 }}>
             <div className="modal-dialog modal-lg">
                 <div className="modal-content">
                     <div className="modal-header">

@@ -52,14 +52,22 @@ function SellerDashboard() {
     if (loading) return <div className="vh-100 d-flex align-items-center justify-content-center">Loading...</div>;
 
     // Define Tabs based on Shop State
-    const tabs = shop ? ['OVERVIEW', 'PRODUCTS', 'ORDERS', 'SETTINGS'] : ['CREATE SHOP'];
+    // Define Tabs based on Shop State
+    let tabs = ['CREATE SHOP'];
+    if (shop) {
+        if (shop.status === 'APPROVED') {
+            tabs = ['OVERVIEW', 'PRODUCTS', 'ORDERS', 'SETTINGS'];
+        } else {
+            tabs = ['OVERVIEW', 'SETTINGS'];
+        }
+    }
     const currentTab = tabs.includes(activeTab) ? activeTab : tabs[0];
 
     const renderContent = () => {
         switch (currentTab) {
             case 'CREATE SHOP': return <CreateShopTab onShopCreated={handleShopCreated} />;
-            case 'OVERVIEW': return <OverviewTab />;
-            case 'PRODUCTS': return <ProductsTab />;
+            case 'OVERVIEW': return <OverviewTab shop={shop} />;
+            case 'PRODUCTS': return <ProductsTab shop={shop} />;
             case 'ORDERS': return <OrdersTab />;
             case 'SETTINGS': return <SettingsTab shop={shop} onUpdate={handleShopUpdate} />;
             default: return null;
@@ -67,7 +75,7 @@ function SellerDashboard() {
     };
 
     return (
-        <div className="min-vh-100 bg-light">
+        <div className="min-vh-100 bg-light" style={{ paddingTop: '100px' }}>
 
             {/* PENDING WARNING BANNER */}
             {shop && shop.status === 'PENDING' && (

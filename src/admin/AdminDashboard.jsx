@@ -36,7 +36,7 @@ function AdminDashboard() {
     }, []);
 
     return (
-        <div className="min-vh-100 bg-light">
+        <div className="min-vh-100 bg-light" style={{ paddingTop: '100px' }}>
             <div className="bg-white border-bottom shadow-sm px-4 py-3 d-flex justify-content-between align-items-center">
                 <h4 className="fw-bold mb-0 text-primary">Admin Dashboard</h4>
                 <div className="btn-group">

@@ -12,7 +12,7 @@ function CreateShopTab({ onShopCreated }) {
         city: '',
         state: '',
         pinCode: '',
-        country: '',
+        country: 'India',
         gstNumber: '',
         panNumber: '',
         aadhaarNumber: ''
@@ -116,7 +116,7 @@ function CreateShopTab({ onShopCreated }) {
                             </div>
                             <div className="col-md-6">
                                 <label className="form-label">Country</label>
-                                <input type="text" name="country" value={formData.country} onChange={handleChange} className="form-control" defaultValue="India" />
+                                <input type="text" name="country" value={formData.country} onChange={handleChange} className="form-control" />
                             </div>
                         </div>
 

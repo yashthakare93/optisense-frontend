@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const banners = ["/Banner1.jpg", "/Banner3.jpg", "/Banner2.jpg"];
+  const banners = ["/coastline-jj-230126.webp","/hip-hop-230126.jpg","/Hustlr-230126.webp","/Indian-accent-230126.webp","public/owndays-230126.webp"];
 
   const categories = [
     { name: 'Eyeglasses', img: '/eyeglasses.webp', promo: '50% OFF' },
@@ -47,16 +47,18 @@ function HomePage() {
             {categories.map((cat, i) => (
               <div key={i} className="col">
                 <div className="text-center" style={{ cursor: 'pointer' }}>
-                  
+
                   {/* 3D CATEGORY BOX */}
                   <div
-                    className="bg-white rounded-4 border border-light position-relative d-flex align-items-center justify-content-center mx-auto overflow-hidden shadow-sm"
-                    style={{ 
+                    className="bg-white rounded-4 border border-light position-relative d-flex align-items-center justify-content-center mx-auto overflow-hidden shadow-sm category-card"
+                    style={{
                       transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                       padding: '12px',
                       height: 'auto',
-                      minHeight: '130px'
+                      minHeight: '130px',
+                      cursor: 'pointer'
                     }}
+                    onClick={() => window.location.href = '/marketplace'}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-6px) scale(1.02)';
                       e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.1)';
@@ -74,7 +76,7 @@ function HomePage() {
                     {cat.promo && (
                       <div
                         className="position-absolute bg-primary text-white fw-bold shadow-sm d-flex align-items-center justify-content-center"
-                        style={{ 
+                        style={{
                           top: '12px', left: '-25px', fontSize: '9px', width: '100px', height: '22px',
                           transform: 'rotate(-45deg)', zIndex: 10, textTransform: 'uppercase'
                         }}
